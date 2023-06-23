@@ -1,0 +1,182 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+class Book {
+    private String id;
+    private String author;
+    private String title;
+    private String publishYear;
+    private String status;
+
+    public Book(String id, String author, String title, String publishYear, String status) {
+        this.id = id;
+        this.author = author;
+        this.title = title;
+        this.publishYear = publishYear;
+        this.status = status;
+    }
+
+    // Getters and setters
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPublishYear() {
+        return publishYear;
+    }
+
+    public void setPublishYear(String publishYear) {
+        this.publishYear = publishYear;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+}
+
+public class BookManagementSystem {
+    private static List<Book> books = new ArrayList<>();
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\nWelcome to Book Management Application");
+            System.out.println("1. Add Book");
+            System.out.println("2. Show All Books");
+            System.out.println("3. Show Available Books");
+            System.out.println("4. Borrow Book");
+            System.out.println("5. Return Book");
+            System.out.println("6. Exit");
+            System.out.print("\nEnter Your Choice: ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    addBook(scanner);
+                    break;
+                case 2:
+                    showAllBooks();
+                    break;
+                case 3:
+                    showAvailableBooks();
+                    break;
+                case 4:
+                    borrowBook(scanner);
+                    break;
+                case 5:
+                    returnBook(scanner);
+                    break;
+                case 6:
+                    System.out.println("Thank you for Using Application !!");
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    private static void addBook(Scanner scanner) {
+        System.out.print("Enter Book ID: ");
+        String id = scanner.next();
+        System.out.print("Enter Author: ");
+        String author = scanner.next();
+        System.out.print("Enter Title: ");
+        String title = scanner.next();
+        System.out.print("Enter Publish Year of Book: ");
+        String publishYear = scanner.next();
+
+        Book book = new Book(id, author, title, publishYear, "Available");
+        books.add(book);
+
+        System.out.println("Book Added Successfully !!!");
+    }
+
+    private static void showAllBooks() {
+        printBookTable(books);
+    }
+
+    private static void showAvailableBooks() {
+        List<Book> availableBooks = new ArrayList<>();
+
+        for (Book book : books) {
+            if (book.getStatus().equals("Available")) {
+                availableBooks.add(book);
+            }
+        }
+
+        printBookTable(availableBooks);
+    }
+
+    private static void borrowBook(Scanner scanner) {
+        System.out.print("Enter Book ID: ");
+        String id = scanner.next();
+
+        for (Book book : books) {
+            if (book.getId().equals(id) && book.getStatus().equals("Available")) {
+                book.setStatus("Not Available");
+                System.out.println("Book Borrowed Successfully !!!");
+                System.out.println("Borrowed Book Details: " + book);
+                return;
+            }
+        }
+
+        System.out.println("Book not found or already borrowed.");
+    }
+
+    private static void returnBook(Scanner scanner) {
+        System.out.print("Enter Book ID: ");
+        String id = scanner.next();
+
+        for (Book book : books) {
+            if (book.getId().equals(id) && book.getStatus().equals("Not Available")) {
+                book.setStatus("Available");
+                System.out.println("Book Returned Successfully !!!");
+                System.out.println("Returned Book Details: " + book);
+                return;
+            }
+        }
+
+        System.out.println("Book not found or already returned.");
+    }
+
+    private static void printBookTable(List<Book> bookList) {
+        System.out.println("------------------------------------------------------------------------------");
+        System.out.printf("%-6s %-16s %-24s %-14s %s%n", "ID", "AUTHOR", "TITLE", "PUBLISH YEAR", "STATUS");
+        System.out.println("------------------------------------------------------------------------------");
+
+        for (Book book : bookList) {
+            System.out.printf("%-6s %-16s %-24s %-14s %s%n",
+                    book.getId(), book.getAuthor(), book.getTitle(), book.getPublishYear(), book.getStatus());
+        }
+
+        System.out.println("------------------------------------------------------------------------------");
+    }
+}
